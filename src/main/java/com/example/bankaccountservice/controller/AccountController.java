@@ -1,5 +1,7 @@
 package com.example.bankaccountservice.controller;
 
+import java.util.List;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,7 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.bankaccountservice.dto.AmountRequest;
 import com.example.bankaccountservice.dto.CreateAccountRequest;
 import com.example.bankaccountservice.entity.Account;
+import com.example.bankaccountservice.entity.Transaction;
 import com.example.bankaccountservice.service.AccountService;
+import com.example.bankaccountservice.service.TransactionService;
 
 import jakarta.validation.Valid;
 
@@ -18,9 +22,11 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/accounts")
 public class AccountController {
     private final AccountService accountService;
+    private final TransactionService transactionService;
 
-    public AccountController(AccountService accountService) {
+    public AccountController(AccountService accountService, TransactionService transactionService) {
         this.accountService = accountService;
+        this.transactionService = transactionService;
     }
 
     @PostMapping
@@ -41,6 +47,11 @@ public class AccountController {
     @PostMapping("/{id}/withdraw")
     public Account withdraw(@Valid @RequestBody AmountRequest request, @PathVariable Long id) {
         return accountService.withdraw(id, request.getAmount());
+    }
+
+    @GetMapping("/{id}/transactions")
+    public List<Transaction> getTransactionByAccountId(@PathVariable Long id) {
+        return transactionService.getTransactionByAccountId(id);
     }
 
 }

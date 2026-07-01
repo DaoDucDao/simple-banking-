@@ -8,16 +8,32 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.example.bankaccountservice.entity.Account;
+import com.example.bankaccountservice.entity.Transaction;
 import com.example.bankaccountservice.exception.AccountNotFoundException;
 import com.example.bankaccountservice.exception.InsufficientFundsException;
 import com.example.bankaccountservice.repository.AccountRepository;
+import com.example.bankaccountservice.repository.TransactionRepository;
 
 @Service
 public class AccountService {
     private final AccountRepository accountRepo;
+    private final TransactionRepository transactionRepo;
 
-    public AccountService(AccountRepository repo) {
-        this.accountRepo = repo;
+    public AccountService(AccountRepository accountRepo, TransactionRepository transRepo) {
+        this.accountRepo = accountRepo;
+        this.transactionRepo = transRepo;
+    }
+
+    private void saveTransaction(Long id, BigDecimal amount, String type) {
+        LocalDateTime today = LocalDateTime.now();
+
+        Transaction transaction = new Transaction();
+        transaction.setAccountId(id);
+        transaction.setAmount(amount);
+        transaction.setCreateAt(today);
+        transaction.setType(type);
+
+        this.transactionRepo.save(transaction);
     }
 
     public Account createAccount(String accountHolderName, BigDecimal initialBigDecimal) {
@@ -48,6 +64,8 @@ public class AccountService {
 
         account.setBalance(addedAmmount);
 
+        saveTransaction(id, ammount, "deposit");
+
         return accountRepo.save(account);
     }
 
@@ -62,6 +80,8 @@ public class AccountService {
         BigDecimal substactedAmmount = currentAmmount.subtract(ammount);
 
         account.setBalance(substactedAmmount);
+
+        saveTransaction(id, ammount, "withdraw");
 
         return accountRepo.save(account);
     }

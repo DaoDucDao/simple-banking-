@@ -4,7 +4,7 @@ A growing banking-style API — started as a Spring Boot learning project (Java 
 
 ## Stack
 - Spring Boot 3.5 (`spring-boot-starter-web`, `spring-boot-starter-data-jpa`, `spring-boot-starter-validation`)
-- H2 in-memory database (to be replaced — see roadmap)
+- PostgreSQL 16 (via Docker)
 - Lombok
 
 ## Done
@@ -16,6 +16,7 @@ A growing banking-style API — started as a Spring Boot learning project (Java 
 - [x] Centralized error handling (custom exceptions + global exception handler)
 - [x] Request validation (Bean Validation on DTOs)
 - [x] Build and run the app, verified endpoints end-to-end with Postman
+- [x] Swap H2 for a real persistent database (PostgreSQL via Docker)
 
 ## Roadmap
 
@@ -29,7 +30,7 @@ A growing banking-style API — started as a Spring Boot learning project (Java 
 - [ ] Account freeze/close functionality
 
 ### Infrastructure & polish
-- [ ] Swap H2 for a real persistent database (PostgreSQL)
+- [x] Swap H2 for a real persistent database (PostgreSQL)
 - [ ] Configure HTTPS (TLS certificate)
 - [ ] API documentation (Swagger/OpenAPI via springdoc)
 - [ ] Unit & integration tests (JUnit, Mockito)
