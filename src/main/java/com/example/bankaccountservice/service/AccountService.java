@@ -5,10 +5,12 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.Optional;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.example.bankaccountservice.entity.Account;
 import com.example.bankaccountservice.entity.Transaction;
+import com.example.bankaccountservice.entity.User;
 import com.example.bankaccountservice.exception.AccountNotFoundException;
 import com.example.bankaccountservice.exception.InsufficientFundsException;
 import com.example.bankaccountservice.repository.AccountRepository;
@@ -42,10 +44,13 @@ public class AccountService {
         LocalDateTime today = LocalDateTime.now();
         String randomId = UUID.randomUUID().toString();
 
+        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         account.setAccountHolderName(accountHolderName);
         account.setBalance(initialBigDecimal);
         account.setCreatedAt(today);
         account.setAccountNumber(randomId);
+        account.setUser(currentUser);
 
         return accountRepo.save(account);
     }

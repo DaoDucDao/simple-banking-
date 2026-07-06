@@ -22,7 +22,7 @@ A growing banking-style API — started as a Spring Boot learning project (Java 
 ## Roadmap
 
 ### Core banking features
-- [ ] User accounts & authentication (Spring Security + JWT) — each user can own multiple bank accounts
+- [x] User accounts & authentication (Spring Security + JWT) — each user can own multiple bank accounts
 - [ ] Multiple account types (CHECKING, SAVINGS) per user
 - [ ] Account-to-account transfers (not just isolated deposit/withdraw)
 - [x] Transaction history — every deposit/withdrawal/transfer recorded as an auditable `Transaction`, queryable per account
