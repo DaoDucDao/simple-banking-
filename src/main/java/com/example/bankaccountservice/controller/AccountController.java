@@ -34,7 +34,7 @@ public class AccountController {
     @PostMapping
     public AccountResponse createAccount(@Valid @RequestBody CreateAccountRequest request) {
         Account currentAccount = accountService.createAccount(request.getAccountHolderName(),
-                request.getInitialDeposit());
+                request.getInitialDeposit(), request.getType());
         return getResponse(currentAccount);
     }
 
@@ -47,6 +47,7 @@ public class AccountController {
 
         return new AccountResponse(currentAccount.getId(), currentAccount.getAccountHolderName(),
                 currentAccount.getAccountNumber(), currentAccount.getBalance(), currentAccount.getCreatedAt(),
+                currentAccount.getType(),
                 currentUser);
     }
 

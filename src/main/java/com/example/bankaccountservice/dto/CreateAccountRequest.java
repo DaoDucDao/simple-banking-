@@ -5,6 +5,8 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 
+import com.example.bankaccountservice.entity.AccountType;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -18,4 +20,7 @@ public class CreateAccountRequest {
     @NotNull(message = "Initial deposit is required!")
     @PositiveOrZero(message = "Initial deposit cannot be negative!")
     private BigDecimal initialDeposit;
+
+    @NotNull(message = "Account type is required!")
+    private AccountType type;
 }

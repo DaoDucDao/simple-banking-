@@ -9,6 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.example.bankaccountservice.entity.Account;
+import com.example.bankaccountservice.entity.AccountType;
 import com.example.bankaccountservice.entity.Transaction;
 import com.example.bankaccountservice.entity.User;
 import com.example.bankaccountservice.exception.AccountNotFoundException;
@@ -38,7 +39,7 @@ public class AccountService {
         this.transactionRepo.save(transaction);
     }
 
-    public Account createAccount(String accountHolderName, BigDecimal initialBigDecimal) {
+    public Account createAccount(String accountHolderName, BigDecimal initialBigDecimal, AccountType type) {
         Account account = new Account();
 
         LocalDateTime today = LocalDateTime.now();
@@ -51,6 +52,7 @@ public class AccountService {
         account.setCreatedAt(today);
         account.setAccountNumber(randomId);
         account.setUser(currentUser);
+        account.setType(type);
 
         return accountRepo.save(account);
     }
