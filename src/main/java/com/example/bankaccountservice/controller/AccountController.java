@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.bankaccountservice.dto.AccountResponse;
 import com.example.bankaccountservice.dto.AmountRequest;
 import com.example.bankaccountservice.dto.CreateAccountRequest;
-import com.example.bankaccountservice.dto.SubAccountDto.UserInfor;
 import com.example.bankaccountservice.entity.Account;
 import com.example.bankaccountservice.entity.Transaction;
 import com.example.bankaccountservice.service.AccountService;
 import com.example.bankaccountservice.service.TransactionService;
+import com.example.bankaccountservice.util.AccountMapper;
 
 import jakarta.validation.Valid;
 
@@ -35,43 +35,35 @@ public class AccountController {
     public AccountResponse createAccount(@Valid @RequestBody CreateAccountRequest request) {
         Account currentAccount = accountService.createAccount(request.getAccountHolderName(),
                 request.getInitialDeposit(), request.getType());
-        return getResponse(currentAccount);
+        return AccountMapper.getAccountResponse(currentAccount);
     }
 
-    private AccountResponse getResponse(Account currentAccount) {
-        Long userId = currentAccount.getUser().getId();
-        String userEmail = currentAccount.getUser().getEmail();
-        String userName = currentAccount.getUser().getUsername();
-
-        UserInfor currentUser = new UserInfor(userId, userEmail, userName);
-
-        return new AccountResponse(currentAccount.getId(), currentAccount.getAccountHolderName(),
-                currentAccount.getAccountNumber(), currentAccount.getBalance(), currentAccount.getCreatedAt(),
-                currentAccount.getType(),
-                currentUser);
-    }
-
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/id")
     public AccountResponse getById(@PathVariable Long id) {
         Account currentAccount = accountService.getById(id);
-        return getResponse(currentAccount);
+        return AccountMapper.getAccountResponse(currentAccount);
     }
 
-    @PostMapping("/{id}/deposit")
-    public AccountResponse deposit(@Valid @RequestBody AmountRequest request, @PathVariable Long id) {
-        Account currentAccount = accountService.deposit(id, request.getAmount());
-        return getResponse(currentAccount);
+    @GetMapping("/{accountNumber}/number")
+    public AccountResponse getByAccountNumber(@PathVariable String accountNumber) {
+        Account currentAccount = accountService.getByAccountNumber(accountNumber);
+        return AccountMapper.getAccountResponse(currentAccount);
     }
 
-    @PostMapping("/{id}/withdraw")
-    public AccountResponse withdraw(@Valid @RequestBody AmountRequest request, @PathVariable Long id) {
-        Account currentAccount = accountService.withdraw(id, request.getAmount());
-        return getResponse(currentAccount);
+    @PostMapping("/{accountNumber}/deposit")
+    public AccountResponse deposit(@Valid @RequestBody AmountRequest request, @PathVariable String accountNumber) {
+        Account currentAccount = accountService.deposit(accountNumber, request.getAmount());
+        return AccountMapper.getAccountResponse(currentAccount);
     }
 
-    @GetMapping("/{id}/transactions")
-    public List<Transaction> getTransactionByAccountId(@PathVariable Long id) {
-        return transactionService.getTransactionByAccountId(id);
+    @PostMapping("/{accountNumber}/withdraw")
+    public AccountResponse withdraw(@Valid @RequestBody AmountRequest request, @PathVariable String accountNumber) {
+        Account currentAccount = accountService.withdraw(accountNumber, request.getAmount());
+        return AccountMapper.getAccountResponse(currentAccount);
     }
 
+    @GetMapping("/{accountNumber}/transactions")
+    public List<Transaction> getTransactionByAccountId(@PathVariable String accountNumber) {
+        return transactionService.getTransactionByAccountId(accountNumber);
+    }
 }

@@ -20,11 +20,11 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long accountId;
-
     private BigDecimal amount;
 
     private String type;
 
-    private LocalDateTime  createAt;
+    private String accountNumber;
+
+    private LocalDateTime createAt;
 }

@@ -3,7 +3,6 @@ package com.example.bankaccountservice.service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
-import java.util.Optional;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -27,11 +26,11 @@ public class AccountService {
         this.transactionRepo = transRepo;
     }
 
-    private void saveTransaction(Long id, BigDecimal amount, String type) {
+    private void saveTransaction(String accountNumber, BigDecimal amount, String type) {
         LocalDateTime today = LocalDateTime.now();
 
         Transaction transaction = new Transaction();
-        transaction.setAccountId(id);
+        transaction.setAccountNumber(accountNumber);
         transaction.setAmount(amount);
         transaction.setCreateAt(today);
         transaction.setType(type);
@@ -58,37 +57,44 @@ public class AccountService {
     }
 
     public Account getById(Long id) {
-        Optional<Account> account = accountRepo.findById(id);
+        Account account = accountRepo.findById(id)
+                .orElseThrow(() -> new AccountNotFoundException("Account Not Found!"));
 
-        return account.orElseThrow(() -> new AccountNotFoundException("Account Not Found!"));
+        return account;
     }
 
-    public Account deposit(Long id, BigDecimal ammount) {
-        Account account = getById(id);
+    public Account getByAccountNumber(String accountNumber) {
+        Account account = accountRepo.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new AccountNotFoundException("Account not found!"));
+        return account;
+    }
+
+    public Account deposit(String accountNumber, BigDecimal ammount) {
+        Account account = getByAccountNumber(accountNumber);
 
         BigDecimal currentAmmount = account.getBalance();
         BigDecimal addedAmmount = currentAmmount.add(ammount);
 
         account.setBalance(addedAmmount);
 
-        saveTransaction(id, ammount, "deposit");
+        saveTransaction(accountNumber, ammount, "deposit");
 
         return accountRepo.save(account);
     }
 
-    public Account withdraw(Long id, BigDecimal ammount) {
-        Account account = getById(id);
+    public Account withdraw(String accountNumber, BigDecimal ammount) {
+        Account account = getByAccountNumber(accountNumber);
 
         BigDecimal currentAmmount = account.getBalance();
 
         if (currentAmmount.compareTo(ammount) < 0)
             throw new InsufficientFundsException("Insufficient Fund!");
 
-        BigDecimal substactedAmmount = currentAmmount.subtract(ammount);
+        BigDecimal substractedAmmount = currentAmmount.subtract(ammount);
 
-        account.setBalance(substactedAmmount);
+        account.setBalance(substractedAmmount);
 
-        saveTransaction(id, ammount, "withdraw");
+        saveTransaction(accountNumber, ammount, "withdraw");
 
         return accountRepo.save(account);
     }
