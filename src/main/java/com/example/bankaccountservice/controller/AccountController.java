@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.bankaccountservice.dto.AccountResponse;
 import com.example.bankaccountservice.dto.AmountRequest;
 import com.example.bankaccountservice.dto.CreateAccountRequest;
+import com.example.bankaccountservice.dto.InterestRateRequest;
 import com.example.bankaccountservice.entity.Account;
 import com.example.bankaccountservice.entity.Transaction;
 import com.example.bankaccountservice.service.AccountService;
@@ -67,7 +69,15 @@ public class AccountController {
     @GetMapping("/{accountNumber}/transactions")
     public Page<Transaction> getTransactionByAccountNumber(@PathVariable String accountNumber, @RequestParam int page,
             @RequestParam int size) {
-                Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size);
         return transactionService.getTransactionByAccountNumber(accountNumber, pageable);
+    }
+
+    @PatchMapping("/{accountNumber}/interest-rate")
+    public AccountResponse changeInterestRate(@PathVariable String accountNumber,
+            @Valid @RequestBody InterestRateRequest request) {
+        Account account = accountService.changeInterest(accountNumber, request.getInterestRate());
+        
+        return AccountMapper.getAccountResponse(account);
     }
 }

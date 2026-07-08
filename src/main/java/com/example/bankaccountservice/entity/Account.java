@@ -33,6 +33,8 @@ public class Account {
 
     private LocalDateTime createdAt;
 
+    private BigDecimal interestRate;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

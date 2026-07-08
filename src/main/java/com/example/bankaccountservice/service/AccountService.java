@@ -13,6 +13,7 @@ import com.example.bankaccountservice.entity.Transaction;
 import com.example.bankaccountservice.entity.User;
 import com.example.bankaccountservice.exception.AccountNotFoundException;
 import com.example.bankaccountservice.exception.InsufficientFundsException;
+import com.example.bankaccountservice.exception.UnauthorizedException;
 import com.example.bankaccountservice.repository.AccountRepository;
 import com.example.bankaccountservice.repository.TransactionRepository;
 
@@ -52,6 +53,7 @@ public class AccountService {
         account.setAccountNumber(randomId);
         account.setUser(currentUser);
         account.setType(type);
+        account.setInterestRate(BigDecimal.valueOf(3.0));
 
         return accountRepo.save(account);
     }
@@ -95,6 +97,21 @@ public class AccountService {
         account.setBalance(substractedAmmount);
 
         saveTransaction(accountNumber, ammount, "withdraw");
+
+        return accountRepo.save(account);
+    }
+
+    public Account changeInterest(String accountNumber, BigDecimal interestRate) {
+        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Account account = getByAccountNumber(accountNumber);
+
+        boolean checkAuthen = account.getUser().getId().equals(currentUser.getId());
+
+        if (!checkAuthen)
+            throw new UnauthorizedException("You don't own this account");
+
+        account.setInterestRate(interestRate);
 
         return accountRepo.save(account);
     }
