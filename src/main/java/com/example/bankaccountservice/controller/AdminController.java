@@ -26,7 +26,7 @@ public class AdminController {
     @PatchMapping("/account/{accountNumber}/interest")
     public AccountResponse changeInterestRate(@PathVariable String accountNumber,
             @Valid @RequestBody InterestRateRequest request) {
-        Account account = accountService.changeInterest(accountNumber, request.getInterestRate());
+        Account account = accountService.adminChangeInterest(accountNumber, request.getInterestRate());
 
         return AccountMapper.getAccountResponse(account);
     }

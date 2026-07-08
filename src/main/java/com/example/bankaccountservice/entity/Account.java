@@ -41,4 +41,6 @@ public class Account {
 
     @Enumerated(EnumType.STRING)
     private AccountType type;
+
+    private BigDecimal debt;
 }

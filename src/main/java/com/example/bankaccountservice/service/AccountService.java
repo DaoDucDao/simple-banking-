@@ -53,7 +53,8 @@ public class AccountService {
         account.setAccountNumber(randomId);
         account.setUser(currentUser);
         account.setType(type);
-        account.setInterestRate(BigDecimal.valueOf(3.0));
+        account.setInterestRate(BigDecimal.valueOf(3));
+        account.setDebt(BigDecimal.valueOf(0));
 
         return accountRepo.save(account);
     }
@@ -113,6 +114,12 @@ public class AccountService {
 
         account.setInterestRate(interestRate);
 
+        return accountRepo.save(account);
+    }
+
+    public Account adminChangeInterest(String accountNumber, BigDecimal interestRate) {
+        Account account = getByAccountNumber(accountNumber);
+        account.setInterestRate(interestRate);
         return accountRepo.save(account);
     }
 }

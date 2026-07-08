@@ -33,4 +33,28 @@ public class InterestService {
             accountRepository.save(account);
         });
     }
+
+    @Scheduled(fixedRate = 600000)
+    public void applyMonthlyFee() {
+        List<Account> listAccount = accountRepository.findByType(AccountType.CHECKINGS);
+
+        listAccount.forEach(account -> {
+            BigDecimal currentBalance = account.getBalance();
+            BigDecimal monthlyFee = BigDecimal.valueOf(5.0);
+
+            boolean compareResult = currentBalance.compareTo(monthlyFee) >= 0;
+
+            if (compareResult) {
+                BigDecimal substractedBalance = currentBalance.subtract(monthlyFee);
+                account.setBalance(substractedBalance);
+            } else {
+                account.setBalance(BigDecimal.valueOf(0));
+
+                BigDecimal debtAmount = monthlyFee.subtract(currentBalance);
+                account.setDebt(debtAmount);
+            }
+
+            accountRepository.save(account);
+        });
+    }
 }
