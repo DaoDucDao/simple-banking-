@@ -1,10 +1,11 @@
 package com.example.bankaccountservice.repository;
 
-import java.util.List;
-
 import com.example.bankaccountservice.entity.Transaction;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
-    List<Transaction> findByAccountNumber(String accountNumber);
+    Page<Transaction> findByAccountNumber(String accountNumber, Pageable pageable);
 }

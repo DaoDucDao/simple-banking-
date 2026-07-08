@@ -1,8 +1,9 @@
 package com.example.bankaccountservice.service;
 
-import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.bankaccountservice.entity.Transaction;
@@ -16,8 +17,8 @@ public class TransactionService {
         this.transactionRepository = repo;
     }
 
-    public List<Transaction> getTransactionByAccountId(String accountNumber) {
-        return transactionRepository.findByAccountNumber(accountNumber);
+    public Page<Transaction> getTransactionByAccountNumber(String accountNumber, Pageable pageable) {
+        return transactionRepository.findByAccountNumber(accountNumber, pageable);
     }
 
     public Transaction getTransactionById(Long id) {
