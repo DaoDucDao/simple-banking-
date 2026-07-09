@@ -26,14 +26,14 @@ A growing banking-style API — started as a Spring Boot learning project (Java 
 - [x] Multiple account types (CHECKING, SAVINGS) per user
 - [x] Account-to-account transfers (not just isolated deposit/withdraw)
 - [x] Transaction history — every deposit/withdrawal/transfer recorded as an auditable `Transaction`, queryable per account
-- [ ] Paginated & filterable transaction history endpoint
-- [ ] Scheduled interest accrual on savings accounts (Spring `@Scheduled`)
-- [ ] Account freeze/close functionality
+- [x] Paginated & filterable transaction history endpoint
+- [x] Scheduled interest accrual on savings accounts (Spring `@Scheduled`)
+- [x] Account freeze/close functionality
 
 ### Infrastructure & polish
 - [x] Swap H2 for a real persistent database (PostgreSQL)
 - [ ] Configure HTTPS (TLS certificate)
-- [ ] API documentation (Swagger/OpenAPI via springdoc)
+- [x] API documentation (Swagger/OpenAPI via springdoc)
 - [ ] Unit & integration tests (JUnit, Mockito)
 - [ ] Dockerized app (Dockerfile + docker-compose with Postgres)
 - [ ] Structured logging

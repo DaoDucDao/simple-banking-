@@ -12,6 +12,7 @@ import com.example.bankaccountservice.exception.AccountNotFoundException;
 import com.example.bankaccountservice.exception.InsufficientFundsException;
 import com.example.bankaccountservice.repository.AccountRepository;
 import com.example.bankaccountservice.repository.TransactionRepository;
+import com.example.bankaccountservice.util.AccountMapper;
 
 @Service
 public class TransferService {
@@ -44,6 +45,9 @@ public class TransferService {
 
         String fromNumber = fromAccount.getAccountNumber();
         String toNumber = toAccount.getAccountNumber();
+
+        AccountMapper.checkStatus(fromAccount);
+        AccountMapper.checkStatus(toAccount);
 
         BigDecimal fromBalance = fromAccount.getBalance();
         if (fromBalance.compareTo(amount) < 0)

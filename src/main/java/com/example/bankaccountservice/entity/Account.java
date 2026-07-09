@@ -43,4 +43,6 @@ public class Account {
     private AccountType type;
 
     private BigDecimal debt;
+
+    private AccountStatus status;
 }

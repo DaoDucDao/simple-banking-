@@ -6,7 +6,9 @@ import java.time.LocalDateTime;
 import com.example.bankaccountservice.dto.AccountResponse;
 import com.example.bankaccountservice.dto.SubAccountDto.UserInfor;
 import com.example.bankaccountservice.entity.Account;
+import com.example.bankaccountservice.entity.AccountStatus;
 import com.example.bankaccountservice.entity.AccountType;
+import com.example.bankaccountservice.exception.AccountNotActiveException;
 
 public class AccountMapper {
     public static AccountResponse getAccountResponse(Account account) {
@@ -23,5 +25,15 @@ public class AccountMapper {
         AccountResponse result = new AccountResponse(userId, userName, userName, balance, createdAt, type, user);
 
         return result;
+    }
+
+    public static void checkStatus(Account account) {
+        AccountStatus status = account.getStatus();
+
+        if (status == AccountStatus.FROZEN)
+            throw new AccountNotActiveException("Account is frozen!");
+
+        if (status == AccountStatus.CLOSED)
+            throw new AccountNotActiveException("Account is permanently closed!");
     }
 }

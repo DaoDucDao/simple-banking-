@@ -8,14 +8,17 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.example.bankaccountservice.entity.Account;
+import com.example.bankaccountservice.entity.AccountStatus;
 import com.example.bankaccountservice.entity.AccountType;
 import com.example.bankaccountservice.entity.Transaction;
 import com.example.bankaccountservice.entity.User;
+import com.example.bankaccountservice.exception.AccountNotActiveException;
 import com.example.bankaccountservice.exception.AccountNotFoundException;
 import com.example.bankaccountservice.exception.InsufficientFundsException;
 import com.example.bankaccountservice.exception.UnauthorizedException;
 import com.example.bankaccountservice.repository.AccountRepository;
 import com.example.bankaccountservice.repository.TransactionRepository;
+import com.example.bankaccountservice.util.AccountMapper;
 
 @Service
 public class AccountService {
@@ -55,6 +58,7 @@ public class AccountService {
         account.setType(type);
         account.setInterestRate(BigDecimal.valueOf(3));
         account.setDebt(BigDecimal.valueOf(0));
+        account.setStatus(AccountStatus.OPEN);
 
         return accountRepo.save(account);
     }
@@ -75,6 +79,8 @@ public class AccountService {
     public Account deposit(String accountNumber, BigDecimal ammount) {
         Account account = getByAccountNumber(accountNumber);
 
+        AccountMapper.checkStatus(account);
+
         BigDecimal currentAmmount = account.getBalance();
         BigDecimal addedAmmount = currentAmmount.add(ammount);
 
@@ -87,6 +93,8 @@ public class AccountService {
 
     public Account withdraw(String accountNumber, BigDecimal ammount) {
         Account account = getByAccountNumber(accountNumber);
+
+        AccountMapper.checkStatus(account);
 
         BigDecimal currentAmmount = account.getBalance();
 
@@ -107,6 +115,8 @@ public class AccountService {
 
         Account account = getByAccountNumber(accountNumber);
 
+        AccountMapper.checkStatus(account);
+
         boolean checkAuthen = account.getUser().getId().equals(currentUser.getId());
 
         if (!checkAuthen)
@@ -119,7 +129,39 @@ public class AccountService {
 
     public Account adminChangeInterest(String accountNumber, BigDecimal interestRate) {
         Account account = getByAccountNumber(accountNumber);
+
+        AccountMapper.checkStatus(account);
+
         account.setInterestRate(interestRate);
+        return accountRepo.save(account);
+    }
+
+    public Account closeAccount(String accountNumber) {
+        Account account = getByAccountNumber(accountNumber);
+
+        account.setStatus(AccountStatus.CLOSED);
+        return accountRepo.save(account);
+    }
+
+    public Account freezeAccount(String accountNumber) {
+        Account account = getByAccountNumber(accountNumber);
+
+        AccountStatus status = account.getStatus();
+        if (status != AccountStatus.OPEN)
+            throw new AccountNotActiveException("Account is not active");
+
+        account.setStatus(AccountStatus.FROZEN);
+        return accountRepo.save(account);
+    }
+
+    public Account unfreezeAccount(String accountNumber) {
+        Account account = getByAccountNumber(accountNumber);
+
+        AccountStatus status = account.getStatus();
+        if (status != AccountStatus.FROZEN)
+            throw new AccountNotActiveException("Account is not frozen");
+
+        account.setStatus(AccountStatus.OPEN);
         return accountRepo.save(account);
     }
 }

@@ -77,7 +77,28 @@ public class AccountController {
     public AccountResponse changeInterestRate(@PathVariable String accountNumber,
             @Valid @RequestBody InterestRateRequest request) {
         Account account = accountService.changeInterest(accountNumber, request.getInterestRate());
-        
+
+        return AccountMapper.getAccountResponse(account);
+    }
+
+    @PatchMapping("/{accountNumber}/close")
+    public AccountResponse closeAccount(@PathVariable String accountNumber) {
+        Account account = accountService.closeAccount(accountNumber);
+
+        return AccountMapper.getAccountResponse(account);
+    }
+
+    @PatchMapping("/{accountNumber}/freeze")
+    public AccountResponse freezeAccount(@PathVariable String accountNumber) {
+        Account account = accountService.freezeAccount(accountNumber);
+
+        return AccountMapper.getAccountResponse(account);
+    }
+
+    @PatchMapping("/{accountNumber}/unfreeze")
+    public AccountResponse unfreezeResponse(@PathVariable String accountNumber) {
+        Account account = accountService.unfreezeAccount(accountNumber);
+
         return AccountMapper.getAccountResponse(account);
     }
 }

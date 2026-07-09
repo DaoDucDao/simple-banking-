@@ -18,13 +18,16 @@ public class InterestService {
         this.accountRepository = accountRepository;
     }
 
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedRate = 600000)
     public void applyInterest() {
         List<Account> listAccount = accountRepository.findByType(AccountType.SAVINGS);
 
         listAccount.forEach(account -> {
             BigDecimal currentBalance = account.getBalance();
             BigDecimal currentInterestRate = account.getInterestRate();
+            if (currentInterestRate == null)
+                return;
+            
             BigDecimal interestAmount = currentBalance.multiply(currentInterestRate).divide(BigDecimal.valueOf(100));
             BigDecimal addedBalance = currentBalance.add(interestAmount);
 
