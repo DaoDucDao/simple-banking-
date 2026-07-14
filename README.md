@@ -34,6 +34,6 @@ A growing banking-style API — started as a Spring Boot learning project (Java 
 - [x] Swap H2 for a real persistent database (PostgreSQL)
 - [ ] Configure HTTPS (TLS certificate)
 - [x] API documentation (Swagger/OpenAPI via springdoc)
-- [ ] Unit & integration tests (JUnit, Mockito)
-- [ ] Dockerized app (Dockerfile + docker-compose with Postgres)
+- [x] Unit & integration tests (JUnit, Mockito)
+- [x] Dockerized app (Dockerfile + docker-compose with Postgres)
 - [ ] Structured logging
